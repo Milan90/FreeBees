@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+</head>
+<body>
+<div>
+    <a href="add/admin">Dodaj admistratora</a>
+</div>
+ <table style="width:100%">
+     <thead>
+      <tr>
+        <th>Admin name</th>
+        <th>Admin email</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+     <tbody>
+     {% for admin in admins %}
+     <tr>
+         <td>{{ admin }}</td>
+         <td>{{ admin.email }}</td>
+         <td><a href="edit/admin/{{ admin.pk }}">edytuj</a> <a href="delete/admin/{{ admin.pk }}">usuń</a> </td>
+     </tr>
+     {% endfor %}
+     </tbody>
+ </table>
+<div>
+    <a href="/main">powrót do panelu administratora</a>
+</div>
+
+</body>
+</html>
