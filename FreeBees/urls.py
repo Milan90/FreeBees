@@ -16,8 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path, include
+from GiveFree.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^$', LandingPageView.as_view()),
+    url(r'^main$', MainPageView.as_view()),
+    url(r'^admins$', AdminsList.as_view(), name='admins'),
+    url(r'^add/admin$', AddAdmin.as_view()),
+    url(r'^edit/admin/(?P<pk>\d+)$', EditAdminView.as_view()),
+    url(r'^delete/admin/(?P<pk>\d+)$', DeleteAdminView.as_view()),
 ]
