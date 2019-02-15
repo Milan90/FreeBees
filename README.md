@@ -1,3 +1,3 @@
 # FreeBees
 
-Project under development
+Project under development checkout develop branch.
