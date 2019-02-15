@@ -1,3 +1,3 @@
 # FreeBees
 
-Project underdeveloping
+Project under development
