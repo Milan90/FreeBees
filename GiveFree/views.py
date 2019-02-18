@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -81,3 +82,57 @@ class DeleteAdminView(DeleteView):
     model = User
     template_name = 'GiveFree/delete_admin.html'
     success_url = reverse_lazy('admins')
+
+
+class AddInstitutionView(View):
+
+    def get(self, request):
+        form = AddInstitutionForm()
+        return render(request, "GiveFree/add_institution.html", {"form": form})
+
+    def post(self, request):
+        form = AddInstitutionForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            goal = form.cleaned_data["goal"]
+            city = form.cleaned_data["city"]
+            street = form.cleaned_data["street"]
+            building_number = form.cleaned_data["building_number"]
+            try:
+                flat_number = form.cleaned_data["flat_number"]
+            except ValueError:
+                flat_number = None
+
+            zip_code = form.cleaned_data["zip_code"]
+            groups_id = form.cleaned_data["groups"]
+
+            address = InstitutionAddress.objects.create(city=city,
+                                                        street=street,
+                                                        building_number=building_number,
+                                                        flat_number=flat_number,
+                                                        zip_code=zip_code)
+            instytution = Institution.objects.create(name=name, goal=goal, address=address)
+
+            for group in groups_id:
+                instytution.groups.add(Groups.objects.get(pk=group))
+                instytution.save()
+
+            return redirect("/institutions")
+        else:
+            return render(request, "GiveFree/add_institution.html", {"form": form})
+
+
+class InstitutionListView(View):
+
+    def get(self, request):
+        institutions = Institution.objects.all()
+        inst_group = {}
+        for institution in institutions:
+            group_list = []
+            for group in institution.groups.all():
+                group_list.append(group.name)
+
+            inst_group[institution.name] = group_list
+
+        print(inst_group)
+        return render(request, "GiveFree/institution_list.html", {"institutions": institutions})

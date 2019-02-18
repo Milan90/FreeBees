@@ -9,9 +9,15 @@ class Institution(models.Model):
     groups = models.ManyToManyField("Groups")
     address = models.OneToOneField("InstitutionAddress", on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class Groups(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class InstitutionAddress(models.Model):
@@ -20,6 +26,9 @@ class InstitutionAddress(models.Model):
     building_number = models.SmallIntegerField(validators=[MinValueValidator(1)])
     flat_number = models.SmallIntegerField(null=True)
     zip_code = models.CharField(max_length=6)
+
+    def __str__(self):
+        return self.city, self.street, self.building_number, self.flat_number, self.zip_code
 
 
 class PickupAddress(models.Model):

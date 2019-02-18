@@ -27,4 +27,6 @@ urlpatterns = [
     url(r'^add/admin$', AddAdmin.as_view()),
     url(r'^edit/admin/(?P<pk>\d+)$', EditAdminView.as_view()),
     url(r'^delete/admin/(?P<pk>\d+)$', DeleteAdminView.as_view()),
+    url(r'^add/institution$', AddInstitutionView.as_view()),
+    url(r'^institutions$', InstitutionListView.as_view()),
 ]

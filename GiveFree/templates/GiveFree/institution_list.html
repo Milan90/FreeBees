@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nazwa instytucji</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{ inst_group.name }}
+    {% for institution in institutions %}
+        <tr>
+            <td>{{ institution }}</td>
+            <td>Ulica: {{ institution.address.street }} {{ institution.address.building_number }}/{{ institution.address.flat_number }}
+                miasto: {{ institution.address.city }}</td>
+            <td>{{ groups }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
