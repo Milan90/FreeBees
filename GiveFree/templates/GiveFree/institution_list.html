@@ -12,6 +12,7 @@
         <th>Nazwa instytucji</th>
         <th>Adres</th>
         <th>Pomoc grupom</th>
+        <th>Akcje</th>
     </tr>
     </thead>
     <tbody>
@@ -27,9 +28,11 @@
                 {% endif %}
             {% endfor %}
             </td>
+            <td><a href="edit/institution/{{ institution.id }}">edytuj</a> <a href="delete/institution/{{ institution.pk }}">usuń</a> </td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+
 </body>
 </html>

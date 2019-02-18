@@ -111,11 +111,11 @@ class AddInstitutionView(View):
                                                         building_number=building_number,
                                                         flat_number=flat_number,
                                                         zip_code=zip_code)
-            instytution = Institution.objects.create(name=name, goal=goal, address=address)
+            institution = Institution.objects.create(name=name, goal=goal, address=address)
 
             for group in groups_id:
-                instytution.groups.add(Groups.objects.get(pk=group))
-                instytution.save()
+                institution.groups.add(Groups.objects.get(pk=group))
+                institution.save()
 
             return redirect("/institutions")
         else:
@@ -127,6 +127,7 @@ class InstitutionListView(View):
     def get(self, request):
         institutions = Institution.objects.all()
         inst_group = {}
+
         for institution in institutions:
             inst_group.setdefault(institution.name, [institution.groups.all()])
             for groups in inst_group[institution.name]:
@@ -135,9 +136,65 @@ class InstitutionListView(View):
                     g.append(group.name)
                 inst_group[institution.name] = g
 
-
-        print(inst_group)
         ctx = {"institutions": institutions,
                "inst_group": inst_group}
 
         return render(request, "GiveFree/institution_list.html", ctx)
+
+
+class EditInstitutionView(View):
+    def get(self, request, id):
+        institution = Institution.objects.get(pk=id)
+        institution_groups = institution.groups.all()
+        groups_id = []
+        for group in institution_groups:
+            groups_id.append(group.id)
+
+        form_values = {'name': institution.name,
+                       'goal': institution.goal,
+                       'city': institution.address.city,
+                       'street': institution.address.street,
+                       'building_number': institution.address.building_number,
+                       'flat_number': institution.address.flat_number,
+                       'zip_code': institution.address.zip_code,
+                       'groups': groups_id}
+
+        form = AddInstitutionForm(initial=form_values)
+
+        return render(request, "GiveFree/edit_institution.html", {"form": form})
+
+    def post(self, request, id):
+        form = AddInstitutionForm(request.POST)
+        if form.is_valid():
+            institution = Institution.objects.get(pk=id)
+            institution.name = form.cleaned_data["name"]
+            institution.goal = form.cleaned_data["goal"]
+            institution.address.city = form.cleaned_data["city"]
+            institution.address.street = form.cleaned_data["street"]
+            institution.address.building_number = form.cleaned_data["building_number"]
+            institution.address.flat_number = form.cleaned_data["flat_number"]
+
+            groups_id = []
+            for group in institution.groups.all():
+                groups_id.append(str(group.id))
+
+            updated_groups_id = form.cleaned_data["groups"]
+
+            if updated_groups_id == groups_id:
+                institution.address.save()
+                institution.save()
+                return redirect("institutions")
+            else:
+                institution.groups.clear()
+                for id in updated_groups_id:
+                    institution.groups.add(Groups.objects.get(pk=id))
+
+                institution.address.save()
+                institution.save()
+                return redirect("institutions")
+
+
+class DeleteInstitutionView(DeleteView):
+    model = Institution
+    template_name = "GiveFree/delete_institution.html"
+    success_url = reverse_lazy("institutions")
