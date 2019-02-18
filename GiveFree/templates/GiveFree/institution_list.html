@@ -10,16 +10,23 @@
     <thead>
     <tr>
         <th>Nazwa instytucji</th>
+        <th>Adres</th>
+        <th>Pomoc grupom</th>
     </tr>
     </thead>
     <tbody>
-    {{ inst_group.name }}
     {% for institution in institutions %}
         <tr>
             <td>{{ institution }}</td>
-            <td>Ulica: {{ institution.address.street }} {{ institution.address.building_number }}/{{ institution.address.flat_number }}
+            <td>
+                Ulica: {{ institution.address.street }} {{ institution.address.building_number }}/{{ institution.address.flat_number }}
                 miasto: {{ institution.address.city }}</td>
-            <td>{{ groups }}</td>
+            <td>{% for val, key in inst_group.items %}
+                {% if val == institution.name %}
+                    {{ key }}
+                {% endif %}
+            {% endfor %}
+            </td>
         </tr>
     {% endfor %}
     </tbody>

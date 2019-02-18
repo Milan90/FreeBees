@@ -128,11 +128,16 @@ class InstitutionListView(View):
         institutions = Institution.objects.all()
         inst_group = {}
         for institution in institutions:
-            group_list = []
-            for group in institution.groups.all():
-                group_list.append(group.name)
+            inst_group.setdefault(institution.name, [institution.groups.all()])
+            for groups in inst_group[institution.name]:
+                g = []
+                for group in groups:
+                    g.append(group.name)
+                inst_group[institution.name] = g
 
-            inst_group[institution.name] = group_list
 
         print(inst_group)
-        return render(request, "GiveFree/institution_list.html", {"institutions": institutions})
+        ctx = {"institutions": institutions,
+               "inst_group": inst_group}
+
+        return render(request, "GiveFree/institution_list.html", ctx)
